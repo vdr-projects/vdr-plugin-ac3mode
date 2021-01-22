@@ -57,6 +57,11 @@ DEFINES += -D_GNU_SOURCE
 
 OBJS = $(PLUGIN).o setup.o ac3audio.o ac3modes.o msgthread.o
 
+### The main target:
+
+all: $(SOFILE)
+
+
 ### Implicit rules:
 
 %.o: %.c
@@ -73,7 +78,7 @@ $(DEPFILE): Makefile
 
 ### Targets:
 
-all: libvdr-$(PLUGIN).so
+#all: libvdr-$(PLUGIN).so
 
 $(SOFILE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) -o $@
