@@ -16,7 +16,7 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ pri
 ### The C++ compiler and options:
 
 CXX      ?= g++
-CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual
+CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual -fPIC
 
 ### The directory environment:
 
@@ -41,6 +41,10 @@ APIVERSION = $(shell sed -ne '/define APIVERSION/s/^.*"\(.*\)".*$$/\1/p' $(VDRDI
 
 ARCHIVE = $(PLUGIN)-$(VERSION)
 PACKAGE = vdr-$(ARCHIVE)
+
+### The name of the shared object file:
+
+SOFILE = libvdr-$(PLUGIN).so
 
 ### Includes and Defines (add further entries here):
 
@@ -71,10 +75,19 @@ $(DEPFILE): Makefile
 
 all: libvdr-$(PLUGIN).so
 
-libvdr-$(PLUGIN).so: $(OBJS)
-	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
-#	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
-	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
+$(SOFILE): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) -o $@
+
+install-lib: $(SOFILE)
+	install -D $^ $(DESTDIR)$(LIBDIR)/$^.$(APIVERSION)
+
+#install: install-lib install-i18n
+install: install-lib
+
+#libvdr-$(PLUGIN).so: $(OBJS)
+#	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
+##	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
+#	@cp --remove-destination $@ $(LIBDIR)/$@.$(APIVERSION)
 
 dist: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
