@@ -12,7 +12,7 @@
 #include "setup.h"
 //#include "i18n.h"
 
-static const char *VERSION        = "0.1";
+static const char *VERSION        = "0.1.1";
 static const char *DESCRIPTION    = "Displays currently active AC3-Mode.";
 
 class cPluginAc3mode : public cPlugin {
